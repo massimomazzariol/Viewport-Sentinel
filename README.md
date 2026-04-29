@@ -12,22 +12,22 @@ It is **not** a visual regression tool. It does not compare screenshots. It expl
 
 - **Hard detection** — DOM measurement via `scrollWidth`, `getBoundingClientRect`, and forced scroll to confirm real overflow
 - **Visual detection** — pixel-level brightness sampling to catch white-strip edge leaks that DOM checks miss
-- **Heuristic detection** — CSS pattern analysis (shadow + clip ancestor, Safari overflow fallbacks)
-- **10 real devices** — Chromium, Firefox, WebKit desktops; iPhone SE/12/15 Pro, Pixel, Samsung mobiles; iPad portrait/landscape tablets
+- **Heuristic detection** — CSS pattern analysis such as shadow clipping inside overflow-constrained ancestors
+- **10 browser/device profiles** — Chromium, Firefox, WebKit desktops; iPhone SE/12/15 Pro, Pixel, Samsung-like mobiles; iPad portrait/landscape tablets
 - **Structured reports** — Markdown + JSON, grouped by severity, with suspected cause and fix suggestion per issue
-- **Strict mode** — tighter thresholds for CI gates
-- **Debug mode** — injects CSS outlines + captures extra screenshots for visual debugging
-- **Zero config** — one env variable or CLI flag is all you need
+- **Strict mode** — tighter thresholds for aggressive QA checks
+- **Debug mode** — injects temporary CSS outlines and captures extra screenshots for visual debugging
+- **Zero config** — one environment variable or CLI flag is all you need
 
 ---
 
 ## Installation
 
 ```bash
-git clone https://github.com/your-org/viewport-sentinel.git
-cd viewport-sentinel
-npm install
-npx playwright install
+git clone https://github.com/massimomazzariol/Viewport-Sentinel.git
+cd Viewport-Sentinel
+pnpm install
+pnpm exec playwright install
 ```
 
 > Node.js 18+ is required.
@@ -36,23 +36,23 @@ npx playwright install
 
 ## Usage
 
-### Via npm scripts
+### Via pnpm scripts
 
 ```bash
 # Standard scan
-SITE_URL=https://example.com npm run scan
+SITE_URL=https://example.com pnpm run scan
 
-# Strict mode (lower thresholds, better for CI)
-SITE_URL=https://example.com npm run scan:strict
+# Strict mode (lower thresholds, better for aggressive QA)
+SITE_URL=https://example.com pnpm run scan:strict
 
 # Debug mode (CSS outlines + extra screenshots)
-SITE_URL=https://example.com npm run scan:debug
+SITE_URL=https://example.com pnpm run scan:debug
 
 # Both strict and debug
-SITE_URL=https://example.com npm run scan:full
+SITE_URL=https://example.com pnpm run scan:full
 
 # Clean output directories
-npm run clean
+pnpm run clean
 ```
 
 ### Via .env file
@@ -68,7 +68,7 @@ DEBUG_MODE=false
 Then run:
 
 ```bash
-npm run scan
+pnpm run scan
 ```
 
 ---
@@ -98,12 +98,12 @@ node src/cli.js --url https://example.com --headed --out ./reports
 
 **Missing URL fails loudly — no silent fallback:**
 
-```
+```text
 Viewport Sentinel — ERROR: No URL provided.
 
   Set the SITE_URL environment variable or use the --url flag:
 
-    SITE_URL=https://example.com npm run scan
+    SITE_URL=https://example.com pnpm run scan
     node src/cli.js --url https://example.com
 ```
 
@@ -113,7 +113,7 @@ Viewport Sentinel — ERROR: No URL provided.
 
 Reports are written to `test-results/` after each scan:
 
-```
+```text
 test-results/
 ├─ report.md          ← Human-readable Markdown report
 ├─ report.json        ← Machine-readable JSON report
@@ -131,16 +131,16 @@ test-results/
 
 > The following is **fake example data** to illustrate the report format.
 
-```
+```text
 # Viewport Sentinel — Scan Report
 
-| Field            | Value                        |
-|------------------|------------------------------|
-| URL              | https://example.com          |
-| Timestamp        | 2026-04-29T14:32:01.000Z     |
-| Mode             | strict + debug               |
-| Devices tested   | 10                           |
-| Actionable issues| 3                            |
+| Field             | Value                    |
+|-------------------|--------------------------|
+| URL               | https://example.com      |
+| Timestamp         | 2026-04-29T14:32:01.000Z |
+| Mode              | strict + debug           |
+| Devices tested    | 10                       |
+| Actionable issues | 3                        |
 
 ## Severity Summary
 
@@ -177,7 +177,7 @@ strip 40px inward (threshold: 25). This suggests a white gap on the right edge.
 
 **Suspected cause:** A section background does not extend to full viewport width.
 
-**Suggested fix:** Ensure background colors cover 100vw on full-width sections.
+**Suggested fix:** Ensure background colours cover the full intended section width.
 
 ---
 
@@ -185,13 +185,13 @@ strip 40px inward (threshold: 25). This suggests a white gap on the right edge.
 
 **Detection method:** heuristic | **Confidence:** low *(heuristic — not a guaranteed bug)*
 
-<div> has a box-shadow (blur: 12px) but is inside an overflow:hidden parent (.card-list).
-The parent has a distinct background colour, increasing likelihood that clipping is visible.
+A card-like element has a box-shadow but is inside an overflow:hidden parent.
+The parent has a distinct background colour, increasing the likelihood that clipping is visible.
 
-**Suspected cause:** overflow:hidden on parent is cropping the shadow region.
+**Suspected cause:** overflow:hidden on parent may be cropping the shadow region.
 
-**Suggested fix:** Add padding equal to the shadow blur to .card-list, or remove
-overflow:hidden if not required for layout.
+**Suggested fix:** Add padding equal to the shadow blur to the container, move the
+shadow to an unclipped wrapper, or remove overflow:hidden if it is not required.
 ```
 
 ---
@@ -200,21 +200,21 @@ overflow:hidden if not required for layout.
 
 | Detector | Type | Detects |
 |----------|------|---------|
-| `overflow` | Hard | `scrollWidth > clientWidth`, unclipped elements past viewport right edge |
-| `edge-leak` | Visual | Bright pixel strip on rightmost 4px vs reference 40px inward |
-| `shadow-clipping` | Heuristic | `box-shadow` / `drop-shadow` inside `overflow:hidden` ancestor |
+| `overflow` | Hard | `scrollWidth > clientWidth`, force-scroll confirmation, elements past viewport right edge |
+| `edge-leak` | Visual | Bright pixel strip on the rightmost edge vs a reference strip inward |
+| `shadow-clipping` | Heuristic | `box-shadow` / `drop-shadow` inside overflow-constrained ancestors |
 | `mobile-menu` | Hard | Menu overlay width, gap, overflow after toggle click |
 
 ### Severity levels
 
 | Level | Meaning |
 |-------|---------|
-| `blocker` | Confirmed layout break — overflow detected by DOM measurement |
+| `blocker` | Confirmed layout break, such as horizontal overflow detected by DOM measurement |
 | `high` | Element outside viewport or visual edge anomaly |
-| `medium` | Shadow clipping or menu gap — likely visible |
-| `low` | Suspicious pattern — review recommended |
+| `medium` | Shadow clipping or menu gap, likely visible |
+| `low` | Suspicious pattern, review recommended |
 | `pass` | Check ran and found nothing |
-| `info` | Check skipped (not applicable for this device) |
+| `info` | Check skipped or not applicable for this device/page |
 
 ---
 
@@ -222,13 +222,14 @@ overflow:hidden if not required for layout.
 
 Screenshot-comparison tools tell you that *something changed*. They do not tell you *what broke or why*. When a client reports a white strip on mobile, a screenshot diff shows a white strip. Viewport Sentinel tells you the element, the pixel count, the suspected cause, and where to look in your CSS.
 
-Common bugs it finds:
+Common bugs it helps identify:
 
-- Hero sections set to `100vw` causing a scrollbar offset on Windows
-- Absolutely positioned elements without `right: 0` or `overflow: hidden` containment
-- Mobile menu overlays with `transform: translateX(-100%)` not accounting for subpixel rounding
-- Card grid shadows clipped by a parent `overflow: hidden` needed for rounded corners
-- Footer sections with `margin-right: -15px` legacy grid gutters on narrow viewports
+- Hero sections set to `100vw` causing scrollbar-related overflow
+- Absolutely positioned elements escaping their container
+- Third-party embeds or iframes forcing a minimum width on mobile
+- Mobile menu overlays with width, transform, or containment issues
+- Card shadows clipped by overflow-constrained parents
+- Legacy grid gutters or negative margins on narrow viewports
 
 ---
 
@@ -239,8 +240,8 @@ Common bugs it finds:
 - **Visual edge-leak detection depends on page contrast.** Dark-background sites with dark right edges may not trigger the brightness delta threshold even if a real gap exists.
 - **Mobile menu detection uses generic selectors.** Highly custom navigation patterns may not be detected.
 - **Single URL per run.** Multi-page crawling is not yet supported.
-- **JavaScript-rendered content** requires `networkidle` to complete. Pages with very long loading times may time out.
-- **Does not detect issues in iframes** embedded from other origins.
+- **JavaScript-rendered content** requires page loading to complete. Pages with very long loading times may time out.
+- **Cross-origin iframe internals cannot be inspected.** Viewport Sentinel can detect the iframe box itself overflowing, but it cannot inspect the iframe’s internal DOM.
 
 ---
 
@@ -251,7 +252,7 @@ Common bugs it finds:
 - [ ] HTML report with embedded screenshots
 - [ ] Custom detector plugins
 - [ ] Diff mode: compare two URLs or two scan runs
-- [ ] Safari-specific overflow:clip fallback detection
+- [ ] Safari-specific overflow fallback checks
 - [ ] GitHub Actions integration example
 
 ---
