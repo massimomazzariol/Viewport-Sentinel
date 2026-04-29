@@ -1,0 +1,11 @@
+node_modules/
+test-results/*
+!test-results/.gitkeep
+!test-results/screenshots/.gitkeep
+screenshots/*
+!screenshots/.gitkeep
+.env
+*.log
+.DS_Store
+Thumbs.db
+.claude/
