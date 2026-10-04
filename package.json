@@ -21,7 +21,7 @@
     "mobile"
   ],
   "author": "Massimo Mazzariol",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/massimomazzariol/Viewport-Sentinel.git"

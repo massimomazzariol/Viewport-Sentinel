@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/massimomazzariol/Viewport-Sentinel)](https://github.com/massimomazzariol/Viewport-Sentinel/releases/latest)
 [![Node 20.12+](https://img.shields.io/badge/node-20.12%2B-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Playwright](https://img.shields.io/badge/Chromium%20%C2%B7%20Firefox%20%C2%B7%20WebKit-Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
 A small command-line check for the responsive bugs that screenshots and unit tests miss. It opens one page on 9 devices in real Chromium, Firefox and WebKit and reports:
 
@@ -63,4 +63,4 @@ node src/cli.js --url file:///path/to/Viewport-Sentinel/examples/fixed.html
 
 ## License
 
-MIT. Copyright (c) 2026 Massimo Mazzariol, [github.com/massimomazzariol/Viewport-Sentinel](https://github.com/massimomazzariol/Viewport-Sentinel). If you reuse the code, keep the copyright notice.
+Apache-2.0. Copyright 2026 Massimo Mazzariol, [https://github.com/massimomazzariol/Viewport-Sentinel](https://github.com/massimomazzariol/Viewport-Sentinel). If you reuse or redistribute it, keep the [NOTICE](NOTICE) file: that is how you credit the original project.

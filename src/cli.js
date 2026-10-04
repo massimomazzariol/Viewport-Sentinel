@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Viewport Sentinel. Copyright (c) 2026 Massimo Mazzariol - https://github.com/massimomazzariol/Viewport-Sentinel (MIT).
+// Viewport Sentinel. Copyright (c) 2026 Massimo Mazzariol - https://github.com/massimomazzariol/Viewport-Sentinel (Apache-2.0, see NOTICE).
 'use strict';
 
 const fs = require('fs');
