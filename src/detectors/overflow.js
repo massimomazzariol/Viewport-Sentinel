@@ -44,7 +44,7 @@ async function detectOverflow(page, config) {
     });
   }
 
-  // ── 2. Element-level overflow — find the worst offenders ───────────────────
+  // ── 2. Element-level overflow: find the worst offenders ───────────────────
   const offenders = await page.evaluate((tolerance) => {
     const viewportW = document.documentElement.clientWidth;
 

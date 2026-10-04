@@ -1,18 +1,14 @@
 {
   "name": "viewport-sentinel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "packageManager": "pnpm@10.33.2",
-  "description": "Playwright-based responsive QA tool that detects real-world layout bugs before your users do.",
-  "main": "src/runner.js",
+  "description": "Responsive layout checks on real Chromium, Firefox and WebKit: horizontal overflow, edge leaks, clipped shadows and mobile menus you cannot use.",
   "bin": {
     "viewport-sentinel": "src/cli.js"
   },
   "scripts": {
     "scan": "node src/cli.js",
-    "scan:strict": "node src/cli.js --strict",
-    "scan:debug": "node src/cli.js --debug",
-    "scan:full": "node src/cli.js --strict --debug",
-    "clean": "node -e \"const fs=require('fs'),path=require('path');['test-results/screenshots','test-results'].forEach(d=>{try{fs.readdirSync(d).forEach(f=>{if(f!=='.gitkeep'){const fp=path.join(d,f);fs.rmSync(fp,{recursive:true,force:true})}})}catch(e){}});console.log('Cleaned output directories.');\""
+    "test": "node --test"
   },
   "keywords": [
     "playwright",
@@ -35,11 +31,9 @@
   },
   "homepage": "https://github.com/massimomazzariol/Viewport-Sentinel#readme",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.12.0"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "minimist": "^1.2.8",
     "playwright": "^1.44.0",
     "pngjs": "^7.0.0"
   }

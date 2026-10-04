@@ -2,7 +2,7 @@
 
 // Heuristic: finds elements with a visible shadow that are inside a parent
 // with overflow:hidden or overflow:clip, which would visually cut off the shadow.
-// This is a pattern that *often* produces clipping — not a guaranteed bug.
+// This is a pattern that *often* produces clipping, not a guaranteed bug.
 async function detectShadowClipping(page, config) {
   const { shadowSuspectPx } = config.thresholds;
 
@@ -12,7 +12,7 @@ async function detectShadowClipping(page, config) {
       // Take the first shadow value and extract numeric px values
       const first = shadowStr.split(/,(?![^(]*\))/)[0].trim();
       const nums = first.match(/-?[\d.]+px/g);
-      // box-shadow: offset-x offset-y blur spread color — blur is the 3rd value
+      // box-shadow: offset-x offset-y blur spread color: blur is the 3rd value
       return nums && nums.length >= 3 ? Math.abs(parseFloat(nums[2])) : 0;
     }
 

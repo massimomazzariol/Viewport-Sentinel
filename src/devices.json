@@ -1,0 +1,35 @@
+[
+	{ "name": "Desktop Chromium", "browser": "chromium", "category": "desktop", "viewport": { "width": 1440, "height": 900 } },
+	{ "name": "Desktop Firefox", "browser": "firefox", "category": "desktop", "viewport": { "width": 1440, "height": 900 } },
+	{ "name": "Desktop WebKit", "browser": "webkit", "category": "desktop", "viewport": { "width": 1440, "height": 900 } },
+	{
+		"name": "iPhone SE", "browser": "webkit", "category": "mobile", "viewport": { "width": 375, "height": 667 },
+		"isMobile": true, "hasTouch": true, "deviceScaleFactor": 2,
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
+	},
+	{
+		"name": "iPhone 15 Pro", "browser": "webkit", "category": "mobile", "viewport": { "width": 393, "height": 852 },
+		"isMobile": true, "hasTouch": true, "deviceScaleFactor": 3,
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+	},
+	{
+		"name": "Android Pixel", "browser": "chromium", "category": "mobile", "viewport": { "width": 412, "height": 915 },
+		"isMobile": true, "hasTouch": true, "deviceScaleFactor": 2.625,
+		"userAgent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+	},
+	{
+		"name": "Samsung Galaxy", "browser": "chromium", "category": "mobile", "viewport": { "width": 360, "height": 780 },
+		"isMobile": true, "hasTouch": true, "deviceScaleFactor": 3,
+		"userAgent": "Mozilla/5.0 (Linux; Android 13; SAMSUNG SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/21.0 Chrome/110.0.5481.154 Mobile Safari/537.36"
+	},
+	{
+		"name": "iPad Portrait", "browser": "webkit", "category": "tablet", "viewport": { "width": 768, "height": 1024 },
+		"hasTouch": true, "deviceScaleFactor": 2,
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
+	},
+	{
+		"name": "iPad Landscape", "browser": "webkit", "category": "tablet", "viewport": { "width": 1024, "height": 768 },
+		"hasTouch": true, "deviceScaleFactor": 2,
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
+	}
+]

@@ -1,0 +1,15 @@
+[
+	".wp-block-navigation__responsive-container-open",
+	"[aria-controls][aria-expanded]",
+	"[class*=\"hamburger\"]",
+	"[class*=\"menu-toggle\"]",
+	"[class*=\"nav-toggle\"]",
+	"[class*=\"menu-button\"]",
+	"[class*=\"burger\"]",
+	"[aria-label*=\"menu\" i]",
+	"[aria-label*=\"navigation\" i]",
+	"button[class*=\"menu\"]",
+	"button[class*=\"nav\"]",
+	"#menu-button",
+	"#nav-toggle"
+]

@@ -1,15 +1,8 @@
 node_modules/
-
-test-results/*
-!test-results/.gitkeep
-!test-results/screenshots/
-!test-results/screenshots/.gitkeep
-
-screenshots/*
-!screenshots/.gitkeep
-
+test-results/
 .env
 *.log
 .DS_Store
 Thumbs.db
 .claude/
+TODO.md

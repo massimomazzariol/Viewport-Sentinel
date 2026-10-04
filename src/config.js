@@ -7,7 +7,7 @@ function validateUrl(rawUrl) {
   if (!rawUrl) return null;
   try {
     const u = new URL(rawUrl);
-    if (!['http:', 'https:'].includes(u.protocol)) return null;
+    if (!['http:', 'https:', 'file:'].includes(u.protocol)) return null;
     return u.href;
   } catch {
     return null;
@@ -20,24 +20,23 @@ function createConfig(cliOptions = {}) {
   if (!rawUrl) {
     process.stderr.write([
       '',
-      'Viewport Sentinel — ERROR: No URL provided.',
+      'Viewport Sentinel: no URL provided.',
       '',
       '  Set the SITE_URL environment variable or use the --url flag:',
       '',
-      '    SITE_URL=https://example.com npm run scan',
       '    node src/cli.js --url https://example.com',
       '',
     ].join('\n') + '\n');
-    process.exit(1);
+    process.exit(2);
   }
 
   const siteUrl = validateUrl(rawUrl);
   if (!siteUrl) {
     process.stderr.write(
-      `\nViewport Sentinel — ERROR: Invalid URL: "${rawUrl}"\n` +
-      `  Must be a valid http:// or https:// URL.\n\n`
+      `\nViewport Sentinel: invalid URL "${rawUrl}"\n` +
+      `  Use an http://, https:// or file:// URL.\n\n`
     );
-    process.exit(1);
+    process.exit(2);
   }
 
   const strict = Boolean(cliOptions.strict || process.env.STRICT === 'true');

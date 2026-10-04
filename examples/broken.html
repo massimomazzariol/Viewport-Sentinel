@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Broken demo</title>
+<style>
+	body { margin: 0; font-family: system-ui, sans-serif; background: #fff; color: #111; }
+	header { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 16px; color: #fff; background: rgb(20 20 20 / 90%); }
+	/* The bug: backdrop-filter makes the header the containing block of the fixed menu, clipping it. */
+	header { backdrop-filter: blur(10px); }
+	.menu-toggle { font: inherit; color: inherit; background: none; border: 1px solid; padding: 8px 12px; }
+	nav { position: fixed; inset: 0; overflow-y: auto; display: none; padding: 80px 24px; background: #111; }
+	nav.open { display: block; }
+	nav a { display: block; padding: 12px 0; color: #fff; font-size: 28px; }
+	main { padding: 24px; line-height: 1.6; }
+	/* Second bug: a banner wider than the screen. */
+	.banner { width: 120vw; padding: 16px; background: #f0f0f0; }
+	@media (min-width: 1024px) {
+		.menu-toggle { display: none; }
+		nav { position: static; display: flex; gap: 24px; padding: 0; overflow: visible; background: none; }
+		nav a { font-size: 16px; padding: 0; }
+		.banner { width: auto; }
+	}
+</style>
+</head>
+<body>
+<header>
+	<strong>Demo</strong>
+	<button class="menu-toggle" aria-controls="menu" aria-expanded="false" onclick="this.setAttribute('aria-expanded', document.getElementById('menu').classList.toggle('open'))">Menu</button>
+	<nav id="menu" aria-label="Main">
+		<a href="#home">Home</a>
+		<a href="#services">Services</a>
+		<a href="#about">About</a>
+		<a href="#contact">Contact</a>
+	</nav>
+</header>
+<main>
+	<h1>A page with two responsive bugs</h1>
+	<p>Open the menu on a phone: only the first item can be seen. Scroll sideways: the banner is wider than the screen.</p>
+	<div class="banner">Book now</div>
+</main>
+</body>
+</html>

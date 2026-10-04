@@ -2,7 +2,7 @@
 
 const { chromium, firefox, webkit } = require('playwright');
 const path = require('path');
-const { DEVICES } = require('./devices');
+const DEVICES = require('./devices.json');
 const { detectOverflow } = require('./detectors/overflow');
 const { detectEdgeLeak } = require('./detectors/edge-leak');
 const { detectShadowClipping } = require('./detectors/shadow-clipping');
@@ -107,8 +107,11 @@ async function run(config) {
 
   const allResults = [];
 
+  // One browser per engine, a fresh context per device.
+  const browsers = {};
   for (const device of DEVICES) {
-    log(`\n[${device.category.toUpperCase()}] ${device.name} (${device.viewport.width}x${device.viewport.height})`);
+    log(`
+[${device.category.toUpperCase()}] ${device.name} (${device.viewport.width}x${device.viewport.height})`);
 
     const launchFn = BROWSER_LAUNCHERS[device.browser];
     if (!launchFn) {
@@ -116,29 +119,23 @@ async function run(config) {
       continue;
     }
 
-    let browser = null;
+    let context = null;
     try {
-      browser = await launchFn.launch({ headless: !config.headed });
-
-      const contextOptions = {
+      browsers[device.browser] = browsers[device.browser] || await launchFn.launch({ headless: !config.headed });
+      context = await browsers[device.browser].newContext({
         viewport: device.viewport,
         isMobile: device.isMobile || false,
         hasTouch: device.hasTouch || false,
         deviceScaleFactor: device.deviceScaleFactor || 1,
-      };
-      if (device.userAgent) contextOptions.userAgent = device.userAgent;
-
-      const context = await browser.newContext(contextOptions);
-      const page = await context.newPage();
-
-      const result = await runDevice(page, device, config);
+        ...(device.userAgent ? { userAgent: device.userAgent } : {}),
+      });
+      const result = await runDevice(await context.newPage(), device, config);
       allResults.push(result);
 
       const actionable = result.issues.filter(
         i => !i.notApplicable && i.severity !== 'pass' && i.severity !== 'info'
       ).length;
-      log(`  → ${actionable} actionable issue(s) in ${result.durationMs}ms`);
-
+      log(`  -> ${actionable} actionable issue(s) in ${result.durationMs}ms`);
     } catch (err) {
       log(`  BROWSER ERROR: ${err.message}`);
       allResults.push({
@@ -152,16 +149,19 @@ async function run(config) {
         durationMs: 0,
       });
     } finally {
-      if (browser) await browser.close().catch(() => {});
+      if (context) await context.close().catch(() => {});
     }
+  }
+  for (const browser of Object.values(browsers)) {
+    await browser.close().catch(() => {});
   }
 
   const reports = await generateReports(allResults, config);
 
   log(`\n${'─'.repeat(60)}`);
   log(`Reports generated:`);
-  log(`  JSON     → ${reports.json}`);
-  log(`  Markdown → ${reports.markdown}`);
+  log(`  JSON     ${reports.json}`);
+  log(`  Markdown ${reports.markdown}`);
   log(`${'─'.repeat(60)}\n`);
 
   return { results: allResults, reports };
